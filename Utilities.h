@@ -28,9 +28,11 @@
     #include <InternalFileSystem.h>
     using namespace Adafruit_LittleFS_Namespace;
     #define EEPROM_FILE "eeprom"
+    #define FW_LENGTH_FILE "fw_length"
     bool file_exists = false;
     int written_bytes = 4;
     File file(InternalFS);
+    File fw_length_file(InternalFS);
 #endif
 #include <stddef.h>
 

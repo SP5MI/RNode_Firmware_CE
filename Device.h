@@ -33,7 +33,10 @@
 // https://learn.adafruit.com/introducing-the-adafruit-nrf52840-feather/hathach-memory-map
 // each section follows along from one another, in this order
 // this is always at the start of the memory map
-#define APPLICATION_START 0x26000
+
+#ifndef APPLICATION_START
+  #define APPLICATION_START 0x26000
+#endif
 
 #define USER_DATA_START 0xED000
 
@@ -142,12 +145,35 @@ void device_save_firmware_hash() {
   if (!fw_signature_validated) hard_reset();
 }
 
+/*
 #if MCU_VARIANT == MCU_NRF52
 uint32_t retrieve_application_size() {
     uint8_t bytes[4];
     memcpy(bytes, (const void*)IMG_SIZE_START, 4);
     uint32_t fw_len = bytes[0] | bytes[1] << 8 | bytes[2] << 16 | bytes[3] << 24;
     return fw_len;
+}
+*/
+
+#if MCU_VARIANT == MCU_NRF52
+#define FW_LENGTH_LEN 4
+void set_fw_length(uint8_t* length_array) {
+    fw_length_file.open(FW_LENGTH_FILE, FILE_O_WRITE);
+    fw_length_file.seek(0);
+    fw_length_file.write(length_array, FW_LENGTH_LEN);
+    fw_length_file.close();
+    hard_reset();
+}
+unsigned long get_fw_length() {
+    fw_length_file.open(FW_LENGTH_FILE, FILE_O_READ);
+    // If file doesn't exist yet
+    if (!fw_length_file) {
+        return 0;
+    }
+    uint8_t length_array[4];
+    fw_length_file.read(length_array, 4);
+    unsigned long length = (length_array[0] << 24) | (length_array[1] << 16) | (length_array[2] << 8) | length_array[3];
+    return length;
 }
 
 void calculate_region_hash(unsigned long long start, unsigned long long end, uint8_t* return_hash) {
@@ -197,7 +223,8 @@ void device_validate_partitions() {
   esp_partition_get_sha256(esp_ota_get_running_partition(), dev_firmware_hash);
   #elif MCU_VARIANT == MCU_NRF52
   // todo, add bootloader, partition table, or softdevice?
-  calculate_region_hash(APPLICATION_START, APPLICATION_START+retrieve_application_size(), dev_firmware_hash);
+  // calculate_region_hash(APPLICATION_START, APPLICATION_START+retrieve_application_size(), dev_firmware_hash);
+  calculate_region_hash(APPLICATION_START, APPLICATION_START+get_fw_length(), dev_firmware_hash);
   #endif
     for (uint8_t i = 0; i < DEV_HASH_LEN; i++) {
       if (dev_firmware_hash_target[i] != dev_firmware_hash[i]) {

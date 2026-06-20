@@ -294,7 +294,10 @@ upload-techo:
 upload-xiao_nrf:
 	arduino-cli upload -p $(or $(port), /dev/ttyACM0) --fqbn Seeeduino:nrf52:xiaonRF52840
 	@sleep 6
-	rnodeconf $(or $(port), /dev/ttyACM0) --firmware-hash $$(./partition_hashes from_device $(or $(port), /dev/ttyACM0))
+	unzip -o build/Seeeduino.nrf52.xiaonRF52840/RNode_Firmware_CE.ino.zip -d build/Seeeduino.nrf52.xiaonRF52840
+	$(VENV_BIN)/rnodeconf $(or $(port), /dev/ttyACM0) --set-firmware-length $$(stat -c%s ./build/Seeeduino.nrf52.xiaonRF52840/RNode_Firmware_CE.ino.bin)
+	@sleep 3
+	$(VENV_BIN)/rnodeconf $(or $(port), /dev/ttyACM0) --firmware-hash $$(sha256sum ./build/Seeeduino.nrf52.xiaonRF52840/RNode_Firmware_CE.ino.bin | grep -o '^\S*')
 
 release:  console-site spiffs-image $(shell grep ^release- Makefile | cut -d: -f1)
 
