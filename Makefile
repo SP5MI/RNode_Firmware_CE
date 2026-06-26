@@ -305,7 +305,7 @@ upload-xiao_nrf:
 	$(VENV_BIN)/rnodeconf $(or $(port), /dev/ttyACM0) --firmware-hash $$(sha256sum ./build/Seeeduino.nrf52.xiaonRF52840/RNode_Firmware_CE.ino.bin | grep -o '^\S*')
 	@echo
 	@echo Now you can set LoRa parameters, for example: 
-	@echo $(VENV_BIN)/rnodeconf $(or $(port), /dev/ttyACM0) --freq 869525000 --bw 250000 --txp 22 --sf 11 --cr 5
+	@echo $(VENV_BIN)/rnodeconf $(or $(port), /dev/ttyACM0) --freq 869556000 --bw 62500 --sf 8 --cr 5
 	@echo
 
 release:  console-site spiffs-image $(shell grep ^release- Makefile | cut -d: -f1)
