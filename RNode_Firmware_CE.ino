@@ -1119,22 +1119,6 @@ void serial_callback(uint8_t sbyte) {
       if (sbyte == CMD_RESET_BYTE) {
         hard_reset();
       }
-    } else if (command == CMD_FW_LENGTH) {
-      #if MCU_VARIANT == MCU_NRF52
-      if (sbyte == FESC) {
-            ESCAPE = true;
-        } else {
-            if (ESCAPE) {
-                if (sbyte == TFEND) sbyte = FEND;
-                if (sbyte == TFESC) sbyte = FESC;
-                ESCAPE = false;
-            }
-            if (frame_len < CMD_L) cmdbuf[frame_len++] = sbyte;
-        }
-        if (frame_len == FW_LENGTH_LEN) {
-          set_fw_length(cmdbuf);
-        }
-      #endif
     } else if (command == CMD_ROM_READ) {
       kiss_dump_eeprom();
     } else if (command == CMD_ROM_WRITE) {

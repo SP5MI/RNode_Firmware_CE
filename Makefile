@@ -300,8 +300,6 @@ upload-xiao_nrf:
 	@echo   $(VENV_BIN)/rnodeconf $(or $(port), /dev/ttyACM0) -r --platform NRF52 --model 19 --product 18 --hwrev 1
 	@echo This only needs to be done once per physical device.
 	@echo
-	$(VENV_BIN)/rnodeconf $(or $(port), /dev/ttyACM0) --set-firmware-length $$(stat -c%s ./build/Seeeduino.nrf52.xiaonRF52840/RNode_Firmware_CE.ino.bin)
-	@sleep 3
 	$(VENV_BIN)/rnodeconf $(or $(port), /dev/ttyACM0) --firmware-hash $$(sha256sum ./build/Seeeduino.nrf52.xiaonRF52840/RNode_Firmware_CE.ino.bin | grep -o '^\S*')
 	@echo
 	@echo Now you can set LoRa parameters, for example: 
