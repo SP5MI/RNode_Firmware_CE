@@ -773,7 +773,7 @@
       #define DIO2_AS_RF_SWITCH true
       #define HAS_BUSY true
       #define HAS_TCXO true
-
+      #define HAS_PMU true
       #define HAS_DISPLAY false
       #define HAS_CONSOLE true
       #define HAS_WIFI true
@@ -782,7 +782,6 @@
       #define HAS_NP false
       #define HAS_SD false
       #define HAS_EEPROM true
-
       #define HAS_INPUT true
       #define HAS_SLEEP true
       #define PIN_WAKEUP GPIO_NUM_21
